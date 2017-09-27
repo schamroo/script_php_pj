@@ -1,5 +1,5 @@
 <?php
-$ex   = "80_Fleuriste _P1_Logo_1";
+$ex   = "80_Fleuriste_P1_Logo_1";
 
 if( strpos(file_get_contents("name.txt"),$ex) !== false) {
     echo $ex;

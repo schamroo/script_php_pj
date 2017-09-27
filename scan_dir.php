@@ -42,8 +42,18 @@ for ($i = 0; $i <  count($files); $i++) {
                         $id = $child->attributes->getNamedItem('id');
                         if ($id != NULL) {
                             $id = $id->nodeValue;
-                            echo $val . " : " . $id . " <br> ";
-                            //echo $id;
+                            $path_parts=pathinfo($val);
+                            echo $path_parts['filename'] . " : " . $id . " <br> ";
+
+                            // verify nomenclature of filename
+                            $ex   = $path_parts['filename'];
+                            if( strpos(file_get_contents("name.txt"),$ex) !== false) {
+                                echo 'nomenclature respecter !';
+                            }
+                            else{
+                                echo 'fichier:'.$ex.' '.'est en erreur';
+                            }
+
 
                             if ($child->nodeType === 1 && ($id === "color1" || $id === "color2" || $id === "color3" || $id === "color4")) {
                                 processChildren($id, $child->childNodes, $arrayTest[$id]);
