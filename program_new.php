@@ -1,6 +1,6 @@
 <?php
 //$dir=$argv[1];
-$dir = "C:\wamp64\www\printjob\Fleuriste";
+$dir = "C:/wamp64/www/printjob/Fleuriste";
 $files = openFile($dir);
 //Access Each file in folder
 for ($i = 0; $i <  count($files); $i++) {
@@ -18,6 +18,15 @@ for ($i = 0; $i <  count($files); $i++) {
         echo "Fichier:".$name." pas au bon format".PHP_EOL;
     }
     else {
+        //Verify that the name is according to the required nomenclature
+        if (strpos(file_get_contents("C:/wamp64/www/printjob/name.txt"), $myArray[0]) == false) {
+
+            //echo '***********************************************************'. PHP_EOL;
+            echo "Fichier:" . $name . " Nomenclature non respecté" . PHP_EOL;
+        }else{
+            //echo '***********************************************************'. PHP_EOL;
+            echo "Fichier:" . $name . " Nomenclature ok" . PHP_EOL;
+        }
             // Verify the layers
             $document = new DOMDocument();
             $document->load($dir . DIRECTORY_SEPARATOR . $val);
@@ -49,13 +58,15 @@ for ($i = 0; $i <  count($files); $i++) {
                     }
                 }
             }
-    }
-    //Verify that the name is according to the required nomenclature
-    if (strpos(file_get_contents("C:/wamp64/www/printjob/name.txt"), $myArray[0]) == false) {
-        echo "Fichier:" . $name . " Nomenclature non respecté" . PHP_EOL;
-    }else{
-       echo "Fichier:" . $name . " Nomenclature ok" . PHP_EOL;
-    }
+
+            //Si la couleur est unique est au format CMJN
+        //$cmjn = convertRVBtoCMJN($argv[2]);
+        $cmjn = convertRVBtoCMJN('833D5B');
+        echo 'C '. $cmjn['C'] .' %' . PHP_EOL;
+        echo 'M '. $cmjn['M'] .' %' . PHP_EOL;
+        echo 'J '. $cmjn['J'] .' %' . PHP_EOL;
+        echo 'N '. $cmjn['N'] .' %' . PHP_EOL;
+        }
     next($files);
 }
 
@@ -88,5 +99,33 @@ function processChildren($id, $children, &$array) {
     }
 }
 
+function convertRVBtoCMJN($hex) {
+    // Conversion de l'hexa en 3 valeurs RVB comprise entre 0 et 1
+    list($r, $g, $b) = sscanf($hex, "%02x%02x%02x");
+    $r /= 255;
+    $g /= 255;
+    $b /= 255;
+
+    // Conversion du RVB vers CMJ
+    $C = 1 - $r;
+    $M = 1 - $g;
+    $J = 1 - $b;
+
+    // Conversion du CMJ vers CMJN
+    $N = min($C, $M, $J);
+    //echo $N;
+
+    $c = ceil(($C-$N)/(1-$N) * 100);
+    $m = ceil(($M-$N)/(1-$N) * 100);
+    $j = ceil(($J-$N)/(1-$N) * 100);
+    $n = ceil($N * 100);
+
+    return array(
+        'C' => $c,
+        'M' => $m,
+        'J' => $j,
+        'N' => $n,
+    );
+}
 
 ?>
