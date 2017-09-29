@@ -1,8 +1,9 @@
 <?php
-//$dir=$argv[1];
-$dir = "C:/wamp64/www/printjob/Fleuriste";
+$dir=$argv[1];
+//$dir = "C:/wamp64/www/printjob/Fleuriste";
+
 $files = openFile($dir);
-//Access Each file in folder
+//Lire chaque fichier dans le repertoire
 for ($i = 0; $i <  count($files); $i++) {
     $key = key($files);
     $val = $files[$key];
@@ -11,23 +12,23 @@ for ($i = 0; $i <  count($files); $i++) {
     $path_parts = pathinfo($val);
     $name = $path_parts['filename'];
 
-//Check if file is of format SVG
     $myArray = explode('.', $val);
     if ($myArray[1]!== 'svg'){
-
+        //On vÃ©rifie si le fichier est au format SVG
+        echo '***********************************************************'. PHP_EOL;
         echo "Fichier:".$name." pas au bon format".PHP_EOL;
     }
     else {
-        //Verify that the name is according to the required nomenclature
+        //On vÃ©rifie si le nom respecte la rÃ¨gle de nomenclature
         if (strpos(file_get_contents("C:/wamp64/www/printjob/name.txt"), $myArray[0]) == false) {
 
             echo '***********************************************************'. PHP_EOL;
-            echo "Fichier:" . $name . " Nomenclature non respecté" . PHP_EOL;
+            echo "Fichier:" . $name . " Nomenclature non respectÃ©" . PHP_EOL;
         }else{
             echo '***********************************************************'. PHP_EOL;
             echo "Fichier:" . $name . " Nomenclature ok" . PHP_EOL;
         }
-        // Verify the layers
+        // On vÃ©rifie le nom des claques
         $document = new DOMDocument();
         $document->load($dir . DIRECTORY_SEPARATOR . $val);
         $svgElement = $document->getElementsByTagName("g");
@@ -45,7 +46,7 @@ for ($i = 0; $i <  count($files); $i++) {
         );
         $viewBox = explode(" ", $svgElement->getAttribute('viewBox'));
 
-        // On récupère les différents éléments de calques
+
         if ($svgElement->hasChildNodes()) {
 
             foreach ($svgElement->childNodes as $child) {
@@ -68,6 +69,7 @@ for ($i = 0; $i <  count($files); $i++) {
         $styleElement = $document->getElementsByTagName("style")->item(0);
 //print_r ($svgElement);
         $colorHec = $styleElement->textContent;
+
         $myArray   = explode('#',$colorHec);
         $slice = array_slice($myArray,0) ;
 //print $size;
