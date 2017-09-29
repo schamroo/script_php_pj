@@ -1,6 +1,6 @@
 <?php
 //get all svg files from directory
-$dir = "C:\wamp64\www\printjob\Fleuriste";
+$dir = "C:\wamp64\www\printjob\img";
 $dh  = opendir($dir);
 
 while (false !== ($filename = readdir($dh)))
@@ -24,7 +24,11 @@ for ($i = 0; $i <  count($files); $i++) {
 
             $document = new DOMDocument();
             $document->load($dir . DIRECTORY_SEPARATOR . $val);
-            $svgElement = $document->getElementsByTagName("g")->item(0);
+            $svgElement = $document->getElementsByTagName("path")->item(0);
+            $att = $svgElement->getAttribute('fill');
+
+           // $svgElement = $document->getElementsByTagName("g");
+            print_r($att);
             $arrayTest = array(
                 'color1' => array(),
                 'color2' => array(),
@@ -39,7 +43,7 @@ for ($i = 0; $i <  count($files); $i++) {
                 foreach ($svgElement->childNodes as $child) {
 
                     if ($child->hasAttributes()) {
-                        $id = $child->attributes->getNamedItem('id');
+                        $id = $child->attributes->getNamedItem('path');
                         if ($id != NULL) {
                             $id = $id->nodeValue;
                             $path_parts=pathinfo($val);
